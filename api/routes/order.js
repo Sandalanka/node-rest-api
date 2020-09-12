@@ -1,16 +1,27 @@
 const express =require('express');
 const router =express.Router();
+var connection =require('../database/connection');
 
 router.get('/',(req,res,next)=>{
-    res.status(200).json({
-        message:'All Order is GET'
+    connection.query("SELECT *FROM new ",function(err ,row){
+        if(err) throw err;
+
+        res.status(200).json({
+            message:'Your All Order',
+            data :row
+        });
+        });
     });
-});
 
 router.get('/:orderID',(req,res,next)=>{
-    res.status(200).json({
-        message:'One Order Details GET',
-        id :req.params.orderID
+    const id =req.params.orderID;
+    connection.query("SELECT*FROM new  WHERE id=?",[id],function(err,result){
+        if(err) throw err;
+        
+        res.status(200).json({
+            message:'Your Select Order',
+            id:result
+        });
     });
 });
 
@@ -19,19 +30,24 @@ router.post('/',(req,res,next)=>{
         productId :req.body.productId,
         quantity :req.body.quantity
     };
-    res.status(201).json({
-        message:'Order is Add',
-        order :order
-       
+    connection.query("INSERT INTO new SET?",order,function(err,result){
+        if(err) throw err;
+        res.status(201).json({
+            message:'Order Add Successfully',
+            createdProduct: result
+        });
     });
 });
 
 
 router.delete('/:orderID',(req,res,next)=>{
-    res.status(200).json({
-        message:'Order is Deleted',
-        id :req.params.orderID
-       
+    var id =req.params.orderID;
+    connection.query("DELETE FROM new WHERE id=?",[id],function(err,result){
+        if(err) throw err;
+        res.status(200).json({
+            message:'Deleted Order Successfully',
+            result:result
+        });
     });
 });
 

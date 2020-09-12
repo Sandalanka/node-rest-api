@@ -1,14 +1,24 @@
-var MongoClient = require('mongodb').MongoClient;
+var mysql = require('mysql');
+var db;
+var setting= {
+     host: "localhost",
+     user: "root",
+     password: "",
+     database: "node-rest-api"
+};
 
+function dbconnection(){
+     if(!db){
+          db=mysql.createConnection(setting);
+          db.connect(function(err){
+          if(!err){
+               console.log('Database Connected');
+          }else{
+               console.log('Error Database Connection');
+          }
+     })
+     }
+     return db;
+}
 
-//database connect
-connection =MongoClient.connect("mongodb://localhost:27017/node-rest-shop", function (err, db) {
-   
-     if(err) throw err;
-    console.log("Database Connected");
-     //Write databse Insert/Update/Query code here..
-                
-});
-
-
-module.exports =connection;
+module.exports =dbconnection();

@@ -1,64 +1,71 @@
 const express =require('express');
 const router =express.Router();
-//const Product =require('../module/product');
-//const MongoClient = require('mongodb').MongoClient;
+
 var connection =require('../database/connection');
 
 router.get('/',(req,res,next)=>{
+connection.query("SELECT *FROM  product ",function(err ,row){
+    if(err) throw err;
     res.status(200).json({
-        message:'Handling GET request to /product'
+        message:'All product',
+        data :row
+    });
     });
 });
 
 router.post('/',(req,res,next)=>{
-    // const product = new Product({
-    //     _id :new MongoClient.Type.ObjectId(),
-    //     name :req.body.name,
-    //     price :req.body.price
-    // });
-
-    // product.save().then(result =>{
-    //     console.log(result);
-    // }).catch(err => console.log(err));
-
-
-    res.status(201).json({
-        message:'Handling POST request to /product',
-        createdProduct: product
+    const product ={
+        name :req.body.name,
+        price :req.body.price,
+    };
+    connection.query("INSERT INTO product SET?",product,function(err,result){
+        if(err) throw err;
+        
+        res.status(201).json({
+            message:'Product Add successfully',
+            createdProduct: result
+        });
     });
 });
 
 
 router.get('/:productId',(req,res,next)=>{
     const id =req.params.productId;
-    if(id ==='special'){
-        res.status(200).json({
-            message:'Your discovered the special ID',
-            id:id
+        connection.query("SELECT*FROM product WHERE id=?",[id],function(err,result){
+            if(err) throw err;
+            
+            res.status(200).json({
+                message:'Your Product',
+                id:result
+            });
         });
-    }else{
-        res.status(200).json({
-            message:'Your passed ID',
-            id:id
-        });
-
-    }
     
 });
 
 router.patch('/:productId',(req,res,next)=>{
-   
-    res.status(200).json({
-        message:'Updated Product',
-        
+    var id=req.params.productId;
+    var name =req.body.name;
+    var price =req.body.price;
+    connection.query("UPDATE product SET name=?,price=? WHERE id=?",[name,price,id],function(err,result){
+        if(err) throw err;
+        res.status(200).json({
+            message:'Updated Product Successfully',
+            result :result
+            
+        });
     });
 });
 
 router.delete('/:productId',(req,res,next)=>{
-   
-    res.status(200).json({
-        message:'Deleted Product',
-       
+    var id =req.params.productId;
+    connection.query("DELETE FROM product WHERE id=?",[id],function(err,result){
+        if(err) throw err;
+        res.status(200).json({
+            message:'Deleted Product Successfully',
+            result:result
+        });
+
+
     });
 });
 
