@@ -1,7 +1,7 @@
 # Node.js API
 
 <p align="center">
-  <img src="https://nodejs.org/static/images/logo.svg" alt="Node.js Logo" width="120"/>
+  <img src="https://nodejs.org/static/images/logo.svg" alt="Node.js Logo" width="320"/>
 </p>
 
 A simple **Node.js API project** demonstrating how to set up and run an API locally.
